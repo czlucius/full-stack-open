@@ -1,21 +1,30 @@
 
-const App = () => {
-  const course = 'Half Stack application development'
-  const part1 = 'Fundamentals of React'
-  const exercises1 = 10
-  const part2 = 'Using props to pass data'
-  const exercises2 = 7
-  const part3 = 'State of a component'
-  const exercises3 = 14
-
+const App = () => {  
   document.title = "Course Info"
+
+  const course = {
+    name: 'Half Stack application development',
+    parts: [
+      {
+        name: 'Fundamentals of React',
+        exercises: 10
+      },
+      {
+        name: 'Using props to pass data',
+        exercises: 7
+      },
+      {
+        name: 'State of a component',
+        exercises: 14
+      }
+    ]
+  }
 
   return (
     <div>
-      <Header course={course} />
-      {/* The parts and exercises are passed into Content as an array, so they can be populated without repeating code */}
-      <Content parts={[part1, part2, part3]} exercises={[exercises1, exercises2, exercises3]}/>
-      <Footer exercises={exercises1 + exercises2 + exercises3}/>
+      <Header course={course.name} />
+      <Content parts={course.parts}/>
+      <Total exercises={course.parts}/>
     </div>
   )
 }
@@ -29,23 +38,32 @@ const Header = (props) => {
 
 const Content = (props) => {
   const parts = props.parts;
-  const totalExercises = props.exercises;
+  console.log(parts);
   
-  var contentJSX = [];
-  for (var i = 0; i < parts.length; i++) {
-    contentJSX.push(
-      <Part part={parts[i]} exercises={totalExercises[i]}/>
+  let content = [];
+  for (const part of parts) {
+    console.log(part.name);
+    console.log(part.exercises);
+    content = content.concat(
+      <Part part={part.name} exercises={part.exercises}/>
     );
   }
-  return contentJSX;
+  return content;
 }
 
 
 const Part = (props) => 
   <p>{props.part} {props.exercises}</p>
 
-const Footer = (props) => 
-  <p>Number of exercises {props.exercises}</p>
+const Total = (props) => {
+  let total = 0
+  for (const part in props.parts) {
+    total += part.exercises
+  }
+  return (
+    <p>Number of exercises {total}</p>
+  )
+}
 
 
 export default App
