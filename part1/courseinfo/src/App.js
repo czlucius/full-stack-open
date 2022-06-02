@@ -1,6 +1,5 @@
 
 const App = () => {  
-  document.title = "Course Info"
 
   const course = {
     name: 'Half Stack application development',
