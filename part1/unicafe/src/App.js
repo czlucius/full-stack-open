@@ -19,7 +19,7 @@ const App = () => {
       <button onClick={goodHandler}>Good</button>
       <button onClick={badHandler}>Bad</button>
       <button onClick={neutralHandler}>Neutral</button>
-      <Statistics good={good} bad={bad} neutral = {neutral} />
+      <Statistics good={good} bad={bad} neutral={neutral} />
 
     </div>
   )
@@ -27,7 +27,7 @@ const App = () => {
 
 
 
-const Statistics = ({good, bad, neutral}) => {
+const Statistics = ({ good, bad, neutral }) => {
   const calcAll = () => good + bad + neutral
   const calcAvg = () => {
     const goodScore = good
@@ -38,7 +38,7 @@ const Statistics = ({good, bad, neutral}) => {
     return !isNaN(avg) ? avg : 0 // Check if avg is NaN
   }
 
-  return (
+  const content = (calcAll() > 0) ? (
     <>
       <h2>Statistics</h2>
       <p>Good: {good}</p>
@@ -47,7 +47,14 @@ const Statistics = ({good, bad, neutral}) => {
       <p>All: {calcAll()}</p>
       <p>Average: {calcAvg()}</p>
     </>
+  ) : (
+    <>
+      <h2>Statistics</h2>
+      <p>No feedback given</p>
+    </>
   )
+
+  return content
 }
 
 export default App
