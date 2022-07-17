@@ -7,9 +7,11 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
+
   const goodHandler = () => { setGood(good + 1) }
   const badHandler = () => { setBad(bad + 1) }
   const neutralHandler = () => { setNeutral(neutral + 1) }
+
 
   return (
     <div>
@@ -17,12 +19,34 @@ const App = () => {
       <button onClick={goodHandler}>Good</button>
       <button onClick={badHandler}>Bad</button>
       <button onClick={neutralHandler}>Neutral</button>
+      <Statistics good={good} bad={bad} neutral = {neutral} />
+
+    </div>
+  )
+}
+
+
+
+const Statistics = ({good, bad, neutral}) => {
+  const calcAll = () => good + bad + neutral
+  const calcAvg = () => {
+    const goodScore = good
+    const badScore = -bad
+    const allScore = goodScore + badScore
+    const allLen = calcAll()
+    const avg = allLen != 0 ? allScore / allLen : 0
+    return !isNaN(avg) ? avg : 0 // Check if avg is NaN
+  }
+
+  return (
+    <>
       <h2>Statistics</h2>
       <p>Good: {good}</p>
       <p>Bad: {bad}</p>
       <p>Neutral: {neutral}</p>
-
-    </div>
+      <p>All: {calcAll()}</p>
+      <p>Average: {calcAvg()}</p>
+    </>
   )
 }
 
