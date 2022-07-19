@@ -1,16 +1,12 @@
 import { useState } from 'react'
 import React from 'react'
+import "./App.css"
 
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
-
-
-  const goodHandler = () => { setGood(good + 1) }
-  const badHandler = () => { setBad(bad + 1) }
-  const neutralHandler = () => { setNeutral(neutral + 1) }
 
 
   return (
@@ -37,15 +33,19 @@ const Statistics = ({ good, bad, neutral }) => {
     const avg = allLen !== 0 ? allScore / allLen : 0
     return !isNaN(avg) ? avg : 0 // Check if avg is NaN
   }
+  const positivePct = String((good / calcAll()) * 100) + "%"
 
   const content = (calcAll() > 0) ? (
     <>
       <h2>Statistics</h2>
-      <StatisticLine text="Good" value={good}/>
-      <StatisticLine text="Bad" value={bad}/>
-      <StatisticLine text="Neutral" value={neutral}/>
-      <StatisticLine text="All" value={calcAll()}/>
-      <StatisticLine text="Average" value={calcAvg()}/>
+      <StatisticTableRoot>
+        <StatisticLine text="Good" value={good}/>
+        <StatisticLine text="Bad" value={bad}/>
+        <StatisticLine text="Neutral" value={neutral}/>
+        <StatisticLine text="All" value={calcAll()}/>
+        <StatisticLine text="Average" value={calcAvg()}/>
+        <StatisticLine text="Positive" value={positivePct}/>
+      </StatisticTableRoot>
     </>
   ) : (
     <>
@@ -57,8 +57,20 @@ const Statistics = ({ good, bad, neutral }) => {
   return content
 }
 
+const StatisticTableRoot = (props) => 
+  <table>
+    <colgroup>
+      <col/>
+      <col/>
+    </colgroup>
+    {props.children}
+  </table>
+
 const StatisticLine = ({text, value}) => 
-  <p>{text}: {value}</p>
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+  </tr>
 
 const Button = ({attribute, setAttribute, text}) => 
   <button onClick={() => setAttribute(attribute + 1)}>{text}</button>
