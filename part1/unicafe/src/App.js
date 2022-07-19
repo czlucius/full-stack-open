@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import React from 'react';
+import React from 'react'
 
 const App = () => {
   // save clicks of each button to its own state
@@ -16,9 +16,9 @@ const App = () => {
   return (
     <div>
       <h2>Give feedback</h2>
-      <button onClick={goodHandler}>Good</button>
-      <button onClick={badHandler}>Bad</button>
-      <button onClick={neutralHandler}>Neutral</button>
+      <Button attribute={good} setAttribute={setGood} text="Good" />
+      <Button attribute={bad} setAttribute={ setBad} text="Bad" />
+      <Button attribute={neutral} setAttribute={ setNeutral} text="Neutral" />
       <Statistics good={good} bad={bad} neutral={neutral} />
 
     </div>
@@ -34,18 +34,18 @@ const Statistics = ({ good, bad, neutral }) => {
     const badScore = -bad
     const allScore = goodScore + badScore
     const allLen = calcAll()
-    const avg = allLen != 0 ? allScore / allLen : 0
+    const avg = allLen !== 0 ? allScore / allLen : 0
     return !isNaN(avg) ? avg : 0 // Check if avg is NaN
   }
 
   const content = (calcAll() > 0) ? (
     <>
       <h2>Statistics</h2>
-      <p>Good: {good}</p>
-      <p>Bad: {bad}</p>
-      <p>Neutral: {neutral}</p>
-      <p>All: {calcAll()}</p>
-      <p>Average: {calcAvg()}</p>
+      <StatisticLine text="Good" value={good}/>
+      <StatisticLine text="Bad" value={bad}/>
+      <StatisticLine text="Neutral" value={neutral}/>
+      <StatisticLine text="All" value={calcAll()}/>
+      <StatisticLine text="Average" value={calcAvg()}/>
     </>
   ) : (
     <>
@@ -57,4 +57,10 @@ const Statistics = ({ good, bad, neutral }) => {
   return content
 }
 
-export default App
+const StatisticLine = ({text, value}) => 
+  <p>{text}: {value}</p>
+
+const Button = ({attribute, setAttribute, text}) => 
+  <button onClick={() => setAttribute(attribute + 1)}>{text}</button>
+
+export default App;
