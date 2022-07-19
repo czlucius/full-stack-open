@@ -43,3 +43,8 @@
 .text {
   margin: 10px;
 }
+
+button {
+  margin: 10px;
+  padding: 10px;
+}

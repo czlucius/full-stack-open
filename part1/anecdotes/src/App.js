@@ -23,14 +23,19 @@ const App = () => {
     newVotes[selected] += 1
     setVotes(newVotes)
   }
+  const mostVotesAnecdoteIndex = indexOfMax(votes)
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <p className='text'>{anecdotes[selected]}</p>
       <p>Votes: {votes[selected]}</p>
       
       <button onClick={selectHandler}>Next anecdote</button>
       <button onClick={voteHandler}>Vote</button>
+
+      <h2>Anecdote with most votes</h2>
+      <p>{anecdotes[mostVotesAnecdoteIndex]}</p>
     </div>
   )
 }
@@ -38,6 +43,24 @@ const App = () => {
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * max)
+}
+
+function indexOfMax(arr) {
+  if (arr.length === 0) {
+      return -1;
+  }
+
+  var max = arr[0];
+  var maxIndex = 0;
+
+  for (var i = 1; i < arr.length; i++) {
+      if (arr[i] > max) {
+          maxIndex = i;
+          max = arr[i];
+      }
+  }
+
+  return maxIndex;
 }
 
 
