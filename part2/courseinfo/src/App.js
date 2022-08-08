@@ -1,4 +1,5 @@
 import Course from "./components/Course.js"
+
 const App = () => {
   const courses = [
     {
@@ -46,6 +47,7 @@ const App = () => {
   ]
   return (
     <div>
+      <h2>Web development curriculum</h2>
       {courses.map(course => <Course course={course}/>)}
     </div>
   )
