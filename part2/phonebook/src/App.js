@@ -1,12 +1,22 @@
-import { useState } from 'react'
+import {useEffect, useState} from 'react'
 import Filter from './components/Filter.js'
 import PersonForm from './components/PersonForm.js'
 import Persons from './components/Persons.js'
+import axios from "axios";
+
+
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Lucius C.', phone: '12345678', id: 1 }
-  ])
+  const [persons, setPersons] = useState([])
+
+  useEffect(() => {
+    axios.get("http://localhost:3001/persons").then((response=> {
+      const persons_data = response.data
+      console.log("Response: ", persons_data)
+      setPersons(persons_data)
+    }))
+  }, [])
+
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
@@ -24,7 +34,10 @@ const App = () => {
     setNewPhone(event.target.value)
   }
 
-  const searchQueryChanged = (event) => setSearchQuery(event.target.value)
+  const searchQueryChanged = (event) => {
+    console.log("search query changed: event received: ", event)
+    setSearchQuery(event.target.value)
+  }
 
   const clickHandler = (event) => {
     event.preventDefault()
@@ -41,9 +54,9 @@ const App = () => {
       alert(`${newName} is already added to phonebook`)
     } else {
       
-    const newObj = { name: newName, phone: newPhone, id: persons.length + 1 }
-    setPersons(persons.concat(newObj))
-    
+      const newObj = { name: newName, number: newPhone, id: persons.length + 1 }
+      setPersons(persons.concat(newObj))
+
 
     }
     // Clear the input box.
