@@ -1,5 +1,5 @@
-export const Filter = ({query, onQueryChanged}) => (
+export const Filter = ({query, queryChangedEventHook}) => (
     <div>
-        find countries: <input value={query} onChange={onQueryChanged}/>
+        find countries: <input value={query} onChange={queryChangedEventHook}/>
     </div>
 )

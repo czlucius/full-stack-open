@@ -31,8 +31,8 @@ const App = (props) => {
 
 
     if (countries.length > 0) return (<>
-            <Filter query={query} onQueryChanged={queryEventHook}/>
-            <CountriesInfoList countries={countries} filter={query}/>
+            <Filter query={query} queryChangedEventHook={queryEventHook}/>
+            <CountriesInfoList countries={countries} filter={query} setFilter={setQuery}/>
         </>
     )
     else return (<></>) // Do not load if no countries (have not fetched data)
