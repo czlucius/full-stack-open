@@ -2,7 +2,7 @@ import {Country} from "./Country";
 
 export const CountriesInfoList = ({countries, filter, setFilter}) => {
     console.log("received ctys = ", countries)
-    const filtered = countries.filter(country => country.name.common.toLowerCase().startsWith(filter.toLowerCase()))
+    const filtered = countries.filter(country => country.name.common.toLowerCase().includes(filter.toLowerCase()))
 
     let root
     if (filtered.length > 10) {
