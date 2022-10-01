@@ -1,0 +1,18 @@
+{
+  "name": "phonebook-backend",
+  "version": "1.0.0",
+  "description": "A backend for FSO '22 Phonebook",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "czlucius",
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "express": "^4.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
