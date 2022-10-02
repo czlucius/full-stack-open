@@ -113,15 +113,15 @@ const App = () => {
                 })
         }
     }
-
-    navigator.causeError = () => {
+//for testing only:
+ /*navigator.causeError = () => {
         setNotification({
             message: `Information of person.name has already been removed from server`,
             error: true
         })
 
         setTimeout(() => {setNotification({...notification, message: null, error:false})}, 5000)
-    }
+    }*/
 
 
     return (
