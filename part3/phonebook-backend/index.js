@@ -108,26 +108,28 @@ app.post("/api/persons", (req, res) => {
     const person = {...req.body, id: newId} // JSON
     console.log(person)
     data = data.concat(person)
-    res.send("Person has been added.")
+    res.json(person)
 })
 
 app.put("/api/persons/:id", (req, res) => {
     const id = Number(req.params.id)
     const received = req.body
+    let person
     if (!received.name || !received.number) {
         res.status(400).json({error: "Name/number missing"})
         return
     } else if (!data.find(p => p.id === id)) {
         console.log(req.body)
-        const person = {...req.body, id} // JSON
+        person = {...req.body, id} // JSON
         console.log(person)
 
         data = data.concat(person)
     } else {
         data = data.filter(p => p.id !== id)
-        data = data.concat({...req.body, id})
+        person = {...req.body, id}
+        data = data.concat(person)
     }
-    res.send("Person has been added.")
+    res.json(person)
 })
 
 
