@@ -26,13 +26,13 @@ app.get("/api/persons", (req, res) => {
 })
 app.get("/api/persons/:id", (req, res) => {
     const id = Number(req.params.id)
-    console.log(id)
-    console.log(data)
+    // console.log(id)
+    // console.log(data)
     const person = data.find(p => {
-        console.log(p.id)
+        // console.log(p.id)
         return p.id === id
     })
-    console.log(person)
+    // console.log(person)
     if (!person) {
         // Terminate prematurely
         res.status(404).send("404 Not found")
@@ -108,6 +108,26 @@ app.post("/api/persons", (req, res) => {
     data = data.concat(person)
     res.send("Person has been added.")
 })
+
+app.put("/api/persons/:id", (req, res) => {
+    const id = Number(req.params.id)
+    const received = req.body
+    if (!received.name || !received.number) {
+        res.status(400).json({error: "Name/number missing"})
+        return
+    } else if (!data.find(p => p.id === id)) {
+        console.log(req.body)
+        const person = {...req.body, id} // JSON
+        console.log(person)
+
+        data = data.concat(person)
+    } else {
+        data = data.filter(p => p.id !== id)
+        data = data.concat({...req.body, id})
+    }
+    res.send("Person has been added.")
+})
+
 
 
 const PORT = 3001
