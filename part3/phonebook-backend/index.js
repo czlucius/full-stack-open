@@ -8,6 +8,8 @@ app.use(express.json())
 app.use(cors())
 app.use(express.static('build'))
 
+
+
 function isObjEmpty(obj) {
     for (const i in obj) return false;
     return true;
@@ -20,6 +22,8 @@ morgan.token('body', function (req, res) {
 })
 app.use(morgan(":method :url :status :res[content-length] - :response-time ms :body"))
 
+
+
 let data = require("./data.json.old")
 const mongoose = require("mongoose");
 // OK
@@ -28,36 +32,32 @@ app.get("/api/persons", async (req, res) => {
     console.log(persons)
     res.json(persons)
 })
-//
-app.get("/api/persons/:id", async (req, res) => {
+// OK
+app.get("/api/persons/:id", async (req, res, next) => {
     const id = req.params.id
     console.log(id)
-
-    const person = await Person.findById(id);
+    let person
+    try {
+        person = await Person.findById(id);
+    } catch (err) {
+        next(err)
+        return
+    }
 
     // console.log("people", people)
     if (!person || isObjEmpty(person)) {
         // Terminate prematurely
-        res.status(404).send("404 Not found")
+        res.status(204).send("204 No Content")
+        return
 
     } else {
         console.log(person)
-        const html = `<!DOCTYPE html>
-<html lang="en">
-	<body>
-		<div>
-		    <h3>Name: ${person.name}</h3>
-		    
-		    <h4>Number: ${person.number}</h4>
-        </div>
-    </body>
-</html>`
-        res.send(html)
+        res.json(person)
     }
 
 
 })
-
+// OK
 app.delete("/api/persons/:id", async (req, res) => {
     const id = req.params.id
     console.log(id)
@@ -72,12 +72,15 @@ app.delete("/api/persons/:id", async (req, res) => {
 
     }
 })
+// OK
 app.get("/info", async (req, res) => {
     let noPpl
     try {
         noPpl = (await Person.find({})).length
     } catch (err) {
-        console.log("An error occurredL:", err)
+        console.log("An error occurred:", err)
+        res.status(500).end()
+        return
     }
     const dateString = new Date().toString()
 
@@ -97,7 +100,7 @@ app.get("/info", async (req, res) => {
 })
 
 //OK
-app.post("/api/persons", async (req, res) => {
+app.post("/api/persons", async (req, res, next) => {
     const received = req.body
     if (!received.name || !received.number) {
         res.status(400).json({error: "Name/number missing"})
@@ -112,33 +115,57 @@ app.post("/api/persons", async (req, res) => {
     console.log(person._id)
     person.id = person._id.toString()
     console.log(person)
-    await person.save()
-    res.json(person)
+    let personSaved
+    try {
+        personSaved = await person.save()
+    } catch (err) {
+        next(err)
+        return
+    }
+    res.json(personSaved)
 })
 
 app.put("/api/persons/:id", async (req, res) => {
-    await res.json({msg: "WIP"})
-    return
-    const id = Number(req.params.id)
+
+    const id = req.params.id
+    console.log("put", id)
     const received = req.body
-    let person
     if (!received.name || !received.number) {
         res.status(400).json({error: "Name/number missing"})
         return
-    } else if (!data.find(p => p.id === id)) {
-        console.log(req.body)
-        person = {...req.body, id} // JSON
+    } else if (!Person.findById(id)) { // not inside
+        const person = new Person(req.body) // JSON
+        console.log(person._id)
+        person.id = person._id.toString()
         console.log(person)
-
-        data = data.concat(person)
-    } else {
-        data = data.filter(p => p.id !== id)
-        person = {...req.body, id}
-        data = data.concat(person)
+        await person.save()
+        res.json(person)
+    } else { // inside
+        // const person = new Person(req.body) // JSON
+        console.log(await Person.updateOne({_id: new mongoose.Types.ObjectId(id)}, req.body, { new: true, runValidators: true, context: 'query' }))
+        res.json(req.body)
     }
-    res.json(person)
 })
 
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+}
 
+// handler of requests with unknown endpoint
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).send({error: error.message})
+    }
+
+    next(error)
+}
+
+app.use(errorHandler)
 const PORT = 18398
 app.listen(PORT, () => console.log(`App is running on ${PORT}`))
