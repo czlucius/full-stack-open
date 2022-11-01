@@ -41,15 +41,19 @@ const App = () => {
             // Show notification
             setNotification({...notification, message:`Added ${person.name}`, error: false})
             setTimeout(() => {setNotification({...notification, message: null})}, 5000)
+        }).catch(err => {
+            console.log(err.response.data.error)
+            setNotification({...notification, message: err.response.data.error, error: true})
+            setTimeout(()=>{setNotification({...notification, message: null})}, 5000)
         })
 
     }
 
     const updatePerson = (person) => {
-        personsService.update(person.id, person)
+        personsService.update(person._id, person)
             .then(response => {
                 const newPersons = [...persons].map(specific => {
-                    if (specific.id === person.id) {
+                    if (specific._id === person._id) {
                         return person
                     } else {return specific}
                 })
@@ -89,17 +93,18 @@ const App = () => {
         let to_add = true
         let replace = false
         if (match) {
+
             to_add = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
             replace = to_add
         }
 
         if (to_add && !replace) {
 
-            const newObj = {name: newName, number: newPhone, id: persons.length + 1}
+            const newObj = {name: newName, number: newPhone}
 
             addPerson(newObj, replace)
         } else if (to_add && replace) {
-            const newObj = {name: newName, number: newPhone, id: persons.find(specific => specific.name === newName).id}
+            const newObj = {name: newName, number: newPhone, _id: persons.find(specific => specific.name === newName)._id}
             updatePerson(newObj)
         }
     }
@@ -107,9 +112,9 @@ const App = () => {
     const deleteHandler = (person) => {
         if (window.confirm(`Delete ${person.name}?`)) {
             console.log("deleting ", person)
-            personsService.remove(person.id)
+            personsService.remove(person._id)
                 .then(response => {
-                    setPersons(persons.filter(specific => specific.id !== person.id))
+                    setPersons(persons.filter(specific => specific._id !== person._id))
                 })
         }
     }
