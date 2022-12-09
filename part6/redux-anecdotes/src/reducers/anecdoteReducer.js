@@ -40,7 +40,7 @@ const reducer = (state = initialState, action) => {
             newState.push(asObject(action.content))
             break
         default:
-            console.error("No such action type!")
+            return newState
     }
 
 

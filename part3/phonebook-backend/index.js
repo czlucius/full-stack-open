@@ -3,20 +3,20 @@ const morgan = require("morgan")
 const Person = require("./models/person.cjs")
 
 const app = express()
-const cors = require('cors')
+const cors = require("cors")
 app.use(express.json())
 app.use(cors())
-app.use(express.static('build'))
+app.use(express.static("build"))
 
 
 
 function isObjEmpty(obj) {
-    for (const i in obj) return false;
-    return true;
+    for (const i in obj) return false
+    return true
 }
 
 
-morgan.token('body', function (req, res) {
+morgan.token("body", function (req) {
     // console.log(res)
     return req ? JSON.stringify(req.body) : null
 })
@@ -25,7 +25,7 @@ app.use(morgan(":method :url :status :res[content-length] - :response-time ms :b
 
 
 let data = require("./data.json.old")
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 // OK
 app.get("/api/persons", async (req, res) => {
     const persons = await Person.find({})
@@ -38,7 +38,7 @@ app.get("/api/persons/:id", async (req, res, next) => {
     console.log(id)
     let person
     try {
-        person = await Person.findById(id);
+        person = await Person.findById(id)
     } catch (err) {
         next(err)
         return
@@ -103,7 +103,7 @@ app.get("/info", async (req, res) => {
 app.post("/api/persons", async (req, res, next) => {
     const received = req.body
     if (!received.name || !received.number) {
-        res.status(400).json({error: "Name/number missing"})
+        res.status(400).json({ error: "Name/number missing" })
         return
     }
     // else if (data.find(p => p.name === received.name)) {
@@ -131,7 +131,7 @@ app.put("/api/persons/:id", async (req, res) => {
     console.log("put", id)
     const received = req.body
     if (!received.name || !received.number) {
-        res.status(400).json({error: "Name/number missing"})
+        res.status(400).json({ error: "Name/number missing" })
         return
     } else if (!Person.findById(id)) { // not inside
         const person = new Person(req.body) // JSON
@@ -142,13 +142,13 @@ app.put("/api/persons/:id", async (req, res) => {
         res.json(person)
     } else { // inside
         // const person = new Person(req.body) // JSON
-        console.log(await Person.updateOne({_id: new mongoose.Types.ObjectId(id)}, req.body, { new: true, runValidators: true, context: 'query' }))
+        console.log(await Person.updateOne({ _id: new mongoose.Types.ObjectId(id) }, req.body, { new: true, runValidators: true, context: "query" }))
         res.json(req.body)
     }
 })
 
 const unknownEndpoint = (request, response) => {
-    response.status(404).send({ error: 'unknown endpoint' })
+    response.status(404).send({ error: "unknown endpoint" })
 }
 
 // handler of requests with unknown endpoint
@@ -157,10 +157,10 @@ app.use(unknownEndpoint)
 const errorHandler = (error, request, response, next) => {
     console.error(error.message)
 
-    if (error.name === 'CastError') {
-        return response.status(400).send({ error: 'malformatted id' })
-    } else if (error.name === 'ValidationError') {
-        return response.status(400).send({error: error.message})
+    if (error.name === "CastError") {
+        return response.status(400).send({ error: "malformatted id" })
+    } else if (error.name === "ValidationError") {
+        return response.status(400).send({ error: error.message })
     }
 
     next(error)
