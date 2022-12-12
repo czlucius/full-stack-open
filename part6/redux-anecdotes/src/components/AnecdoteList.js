@@ -1,6 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {incrementVotes} from "../reducers/anecdoteReducer";
-import {clearNotification, votedFor} from "../reducers/notificationReducer";
+import {saveAndIncrementVotes} from "../reducers/anecdoteReducer";
 
 const AnecdoteList = () => {
     const dispatch = useDispatch()
@@ -10,13 +9,11 @@ const AnecdoteList = () => {
     })
 
     const vote = (id) => {
-        dispatch(incrementVotes(id))
-        dispatch(votedFor(anecdotes.find(anecdote => anecdote.id === id).content))
-        setTimeout(() => {
-            dispatch(clearNotification())
-        }, 5000)
+        dispatch(saveAndIncrementVotes(id))
     }
     console.log("Anecdotes is ", anecdotes)
+    anecdotes.sort((a, b) => b.votes - a.votes)
+
     return anecdotes.map(anecdote =>
         <div key={anecdote.id}>
             <div>

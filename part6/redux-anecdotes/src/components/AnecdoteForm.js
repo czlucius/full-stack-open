@@ -1,6 +1,7 @@
 import {useState} from "react";
 import {useDispatch} from "react-redux";
-import {createAnecdote} from "../reducers/anecdoteReducer";
+import {createAnecdote, saveAnecdote} from "../reducers/anecdoteReducer";
+import anecdoteService from "../services/anecdotes";
 
 const AnecdoteForm = (props) => {
     const [newAnecdote, setNewAnecdote] = useState("")
@@ -9,10 +10,11 @@ const AnecdoteForm = (props) => {
         setNewAnecdote(event.target.value)
     }
 
-    const create = (event) => {
+    const create = async (event) => {
         event.preventDefault()
-        dispatch(createAnecdote(newAnecdote))
+        const content = newAnecdote
         setNewAnecdote("")
+        saveAnecdote(content)
     }
 
     return (
