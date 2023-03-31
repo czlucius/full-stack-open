@@ -13,7 +13,10 @@ const blogSchema = new mongoose.Schema({
 
 const Blog = mongoose.model('Blog', blogSchema)
 
-const mongoUrl = 'mongodb+srv://czlucius:YqdqFOCk0HblBbnW@cluster0.3zshi9a.mongodb.net/bloglist?retryWrites=true&w=majority'
+const mongoUrl = //(process.env.NODE_ENV === 'test'   ? process.env.TEST_MONGODB_URI  : process.env.MONGODB_URI ) ?? 
+//'mongodb://czlucius:eDI2spY6dZaZtfdd@cluster0.3zshi9a.mongodb.net/?retryWrites=true&w=majority'
+'mongodb://czlucius:eDI2spY6dZaZtfdd@ac-rbvjsy5-shard-00-00.3zshi9a.mongodb.net:27017,ac-rbvjsy5-shard-00-01.3zshi9a.mongodb.net:27017,ac-rbvjsy5-shard-00-02.3zshi9a.mongodb.net:27017/?ssl=true&replicaSet=atlas-hh67bp-shard-0&authSource=admin&retryWrites=true&w=majority'
+
 mongoose.connect(mongoUrl)
 
 app.use(cors())
