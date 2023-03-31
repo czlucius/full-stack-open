@@ -1,8 +1,11 @@
+import logger from "./utils/logger";
+const app = require("./app")
 const http = require('http')
-const express = require('express')
-const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
+const config = require('./utils/config')
+
+const {blogsRouter} = require("./controllers/blogs")
 
 const blogSchema = new mongoose.Schema({
   title: String,
@@ -13,32 +16,17 @@ const blogSchema = new mongoose.Schema({
 
 const Blog = mongoose.model('Blog', blogSchema)
 
-const mongoUrl = 'mongodb+srv://czlucius:YqdqFOCk0HblBbnW@cluster0.3zshi9a.mongodb.net/bloglist?retryWrites=true&w=majority'
+const mongoUrl = config.MONGODB_URI
 mongoose.connect(mongoUrl)
 
 app.use(cors())
 app.use(express.json())
 
-app.get('/api/blogs', (request, response) => {
-  Blog
-    .find({})
-    .then(blogs => {
-      response.json(blogs)
-    })
-})
+app.use("/api/notes", blogsRouter)
 
-app.post('/api/blogs', (request, response) => {
-  console.log(JSON.stringify(request.body))
-  const blog = new Blog(request.body)
-
-  blog
-    .save()
-    .then(result => {
-      response.status(201).json(result)
-    })
-})
 
 const PORT = 3003
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+  logger.info(`Server running on port ${PORT}`)
 })
+
