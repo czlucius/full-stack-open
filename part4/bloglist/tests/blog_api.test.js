@@ -4,6 +4,7 @@ const app = require('../app')
 const Blog = require("../models/blog");
 
 const api = supertest(app)
+const initLength = 0
 
 
 test("blog list app returns correct amount of posts", async () => {
@@ -48,24 +49,19 @@ test("unique identifier is named id, and matches _id", async () => {
 }, 100000)
 
 test("POST to /api/blogs creates a new post", async () => {
-    api.post("/api/blogs")
-        .send({
-            title: "Test 1 ",
-            author: "czlucius",
-            url: "www2:858.d2:248832",
-            likes: 3
-          })
-        .expect(200)
-        .expect(res => {
-            expect(res.body).toBe({
-                title: "Test 1 ",
-                author: "czlucius",
-                url: "www2:858.d2:248832",
-                likes: 3
-              })
-        })
+    const payload = {
+        title: "Test 1 ",
+        author: "czlucius",
+        url: "www2:858.d2:248832",
+        likes: 3
+    };
+    await api.post("/api/blogs")
+        .send(payload)
+        .expect([200, 201])
+    expect(await Blog.find(payload)).toHaveLength(1)
+    expect(await Blog.find({})).toHaveLength(initLength+1)
 
-}, 100000)
+}, 150000)
 
 beforeEach(async () => {
     console.log("db url", Blog.db.host)
