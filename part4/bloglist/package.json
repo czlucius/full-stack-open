@@ -4,10 +4,10 @@
   "description": "Blog list for Full Stack Open",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=production node index.js",
-    "dev": "NODE_ENV=production nodemon index.js",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=test nodemon index.js",
     "test-db": "wsl mongod",
-    "test": "NODE_ENV=test jest --verbose"
+    "test": "cross-env NODE_ENV=test jest --verbose"
   },
   "author": "czlucius",
   "license": "AGPL-3.0-only",
@@ -22,6 +22,7 @@
     "supertest": "^6.3.3"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "globalTeardown": "./tests/teardown.js"
   }
 }
