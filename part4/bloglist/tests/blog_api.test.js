@@ -76,6 +76,23 @@ test("request without likes sets likes to 0", async () => {
 
 })
 
+test("request without title or url responds with 400 Bad Request", async () => {
+    const payload1 = {
+        author: "czlucius",
+        url: "www2:858.d2:248832"
+    };
+    await api.post("/api/blogs")
+        .send(payload1)
+        .expect(400)
+    const payload2 = {
+        title: "",
+        author: "czlucius",
+    };
+    await api.post("/api/blogs")
+        .send(payload2)
+        .expect(400)
+}, 13000)
+
 beforeEach(async () => {
     console.log("db url", Blog.db.host)
     await Blog.deleteMany({})

@@ -16,6 +16,11 @@ blogsRouter.post('/', (request, response) => {
 
     if (!body.hasOwnProperty("likes")) {
         body = {...body, likes: 0}
+    } 
+    if (!body.hasOwnProperty("title") || !body.hasOwnProperty("url")) {
+        console.log("error! no title or url")
+        response.send(400)
+        return
     }
     const blog = new Blog(body)
 
