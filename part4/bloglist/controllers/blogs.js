@@ -11,12 +11,18 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.post('/', (request, response) => {
-    logger.info(JSON.stringify(request.body))
-    const blog = new Blog(request.body)
+    let body = request.body
+    logger.info(body)
+
+    if (!body.hasOwnProperty("likes")) {
+        body = {...body, likes: 0}
+    }
+    const blog = new Blog(body)
 
     blog
         .save()
         .then(result => {
+            console.log("Result for creation POST", JSON.stringify(result))
             response.status(201).json(result)
         })
 })

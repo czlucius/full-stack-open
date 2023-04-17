@@ -63,6 +63,19 @@ test("POST to /api/blogs creates a new post", async () => {
 
 }, 150000)
 
+test("request without likes sets likes to 0", async () => {
+    const payload = {
+        title: "Test 1 ",
+        author: "czlucius",
+        url: "www2:858.d2:248832"
+    };
+    const response = await api.post("/api/blogs")
+        .send(payload)
+        .expect([200, 201])
+    expect(response.body).toHaveProperty("likes", 0)
+
+})
+
 beforeEach(async () => {
     console.log("db url", Blog.db.host)
     await Blog.deleteMany({})
