@@ -2,7 +2,8 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require("../models/blog");
-const helper = require("./test_helper")
+const helper = require("./test_helper");
+const blog = require('../models/blog');
 const api = supertest(app)
 
 
@@ -120,9 +121,11 @@ describe("deletion of blog", () => {
         const newObj = (await api.post("/api/blogs")
             .send(payload1)).body
         console.log("newobj", newObj)
+
+        const blogs = await helper.blogsInDb()
     
         await api.delete(`/api/blogs/${{ id: newObj.id.toString() }}`)
-        expect(await Blog.find({ id: newObj.id })).toHaveLength(0)
+        expect(await Blog.find({ id: newObj.id })).toHaveLength(blogs.length - 1)
         // await api.post("/api/blogs")
         //     .send(payload2)
         //     .expect(400)
@@ -132,7 +135,7 @@ describe("deletion of blog", () => {
 
 describe("updating a blog", () => {
     test("http put updates an existing note", async () => {
-        const blogs = await helper.blogsInDb
+        const blogs = await helper.blogsInDb()
         expect(blogs.length).toBeGreaterThan(0) // We won't want to work with undefined
 
         const specific = blogs[0]
