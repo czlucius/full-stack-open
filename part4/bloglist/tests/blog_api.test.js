@@ -93,6 +93,23 @@ test("request without title or url responds with 400 Bad Request", async () => {
         .expect(400)
 }, 13000)
 
+test("http delete request deletes an item", async () => {
+    const payload1 = {
+        title: "Hello",
+        author: "czlucius",
+        url: "www2:858.d2:248832"
+    };
+    const newObj = (await api.post("/api/blogs")
+        .send(payload1)).body
+    console.log("newobj", newObj)
+
+    await api.delete(`/api/blogs/${{id: newObj.id.toString()}}`)
+    expect(await Blog.find({id: newObj.id})).toHaveLength(0)
+    // await api.post("/api/blogs")
+    //     .send(payload2)
+    //     .expect(400)
+}, 13000)
+
 beforeEach(async () => {
     console.log("db url", Blog.db.host)
     await Blog.deleteMany({})
