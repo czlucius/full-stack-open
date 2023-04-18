@@ -3,7 +3,7 @@ const Blog = require("../models/blog")
 const initialBlogs = require("./blogs.json")
 
 async function blogsInDb() {
-    const blogs = Blog.find({})  
+    const blogs = await Blog.find({})  
     return blogs.map(blog => blog.toJSON()) // We are using the toJSON method so the _id and other fields won't be there.
 }
 
