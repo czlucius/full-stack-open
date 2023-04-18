@@ -4,7 +4,6 @@ const app = require('../app')
 const Blog = require("../models/blog");
 const helper = require("./test_helper")
 const api = supertest(app)
-const initLength = 0
 
 
 describe("when there are some some notes saved", () => {
@@ -67,11 +66,14 @@ describe("creation of new blog", () => {
             url: "www2:858.d2:248832",
             likes: 3
         };
+
+        const blogs = await helper.blogsInDb()
+        
         await api.post("/api/blogs")
             .send(payload)
             .expect([200, 201])
         expect(await Blog.find(payload)).toHaveLength(1)
-        expect(await helper.blogsInDb()).toHaveLength(initLength + 1)
+        expect(await helper.blogsInDb()).toHaveLength(blogs.length + 1) // get current length + 1
     
     }, 150000)
     
@@ -126,6 +128,25 @@ describe("deletion of blog", () => {
         //     .expect(400)
     }, 13000)
     
+})
+
+describe("updating a blog", () => {
+    test("http put updates an existing note", async () => {
+        const blogs = await helper.blogsInDb
+        expect(blogs.length).toBeGreaterThan(0) // We won't want to work with undefined
+
+        const specific = blogs[0]
+
+        const payload = {
+            likes: specific.likes + 1
+        }
+        console.log("specific blog to update", specific)
+
+        await api.put(`/api/blogs/${specific.id}`)
+            .send(payload)
+        const newBlog = await Blog.findById(specific.id)
+        expect(newBlog).toHaveProperty("likes", payload.likes)
+    })
 })
 
 beforeEach(async () => {
