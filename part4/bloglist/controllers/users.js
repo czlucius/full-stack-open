@@ -3,7 +3,7 @@ const User = require("../models/user")
 const bcrypt = require("bcrypt")
 const userRouter = require("express").Router()
 
-userRouter.post("/api/users", async (req, res) => {
+userRouter.post("/", async (req, res) => {
     const body = req.body
     const {username, password, name} = body
     if (!username || !password || !name) {
@@ -20,3 +20,13 @@ userRouter.post("/api/users", async (req, res) => {
     console.log("User saved:", result)
     res.status(201).json(result)
 })
+
+
+userRouter.get("/", async (req, res) => {
+    const users = (await User.find({}))
+    res.status(200).json(users)
+
+})
+
+
+module.exports = userRouter
